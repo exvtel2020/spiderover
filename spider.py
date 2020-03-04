@@ -1,6 +1,8 @@
+from typing import List, Any
+
 import requests
 import json
-
+import re
 
 def get_url(url):
     try:
@@ -22,6 +24,8 @@ def my_close_name():
     a=0
     for openlist in finallist:
         a=a+1
+        #getcomment = re.findall('\[em\](.*?)\[/em\]', openlist['rootcommentcontent'])
+        #print(getcomment)
         print("第%s条评论为:%s" %(a,openlist['rootcommentcontent']))
     #print(len(aopen['comment']['commentlist']))
     #(as)
