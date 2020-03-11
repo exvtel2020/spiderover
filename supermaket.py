@@ -17,7 +17,7 @@ def supermarket() :
            ps="x"
            continue
        else :
-           seq,volumns=choosegoods.split(' ')
+           seq,volumns=choosegoods.strip().split(' ')
            if  int(seq)>=1 and int(seq)<=len(goods)+1:
                pickgoods=goods[int(seq)-1]
                getpickgoods=pickgoods.split("_")
