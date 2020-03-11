@@ -1,3 +1,5 @@
+#contact id:heliang01
+
 import sys
 def supermarket() :
    goods=['超土豪咖啡_8','宇宙无敌大榴莲_12','自动翻译笔记本_15','科比签名篮球_500','路飞草帽_1000']
