@@ -10,8 +10,10 @@ def supermarket_upgrade() :
        print(good.replace("_",":")+"元")
    ps=""
    chooselist=""
+   choosepick=[]
    total=0
    markgoods=[]
+   bill=[]
    while ps !="x" :
        choosegoods=input("请选择您需要的商品序号以及购买量【例:1 3】(直到按住x结束):")
        if  choosegoods.lower()=="x" :
@@ -20,17 +22,25 @@ def supermarket_upgrade() :
        else :
            markgoods=choosegoods.strip().split()
            if len(markgoods)>=3 :
-               print("输入方式有误，可接受的数值为[商品序号 购买量]或者x")
+               print("输入方式有误，例1 3或者x")
+               continue
+           if len(markgoods)<2  :
+               print("您输入项是1项，缺少产品序号或者数量.")
                continue
            seq,volumns=choosegoods.strip().split()
            if  int(seq)>=1 and int(seq)<=len(goods)+1:
                pickgoods=goods[int(seq)-1]
                getpickgoods=pickgoods.split("_")
                chooselist+=getpickgoods[0]+"："+volumns+"件,共"+str(int(volumns)*int(getpickgoods[1]))+"元\r\n"
+               choosepick.append(getpickgoods[0]+"："+volumns+"件,共"+str(int(volumns)*int(getpickgoods[1]))+"元")
                #chooselist.append(getpickgoods[0]+"："+volumns+"件,共"+str(int(volumns)*int(getpickgoods[1]))+"元")
                total=total+int(volumns)*int(getpickgoods[1])
+
            else:
                print('Woops! 我们只售卖以上五种商品哦！新货品敬请期待！')
+   if len(chooselist)<=0 :
+       print("您没有购买任何东西!")
+       return False
    ismember=input("请问您是否是会员(Y或者N)：")
    print("您的账单为:")
    print(chooselist[:-2])
@@ -41,7 +51,15 @@ def supermarket_upgrade() :
        #     print(citem)
        print("您的总价为:%s元" % str(total))
        print("您的会员总价为:%s元" % str(total*0.9))
+       bill.append(choosepick)
+       bill.append(total)
+       bill.append(total*0.9)
+       return bill
    else :
        print("您的总价为:%s元" % str(total))
+       bill.append(choosepick)
+       bill.append(total)
+       return bill
 if __name__ == '__main__':
-    supermarket_upgrade()
+    #startmemberlist = ["158", "253", "398"]
+    print(supermarket_upgrade())
