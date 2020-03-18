@@ -1,13 +1,15 @@
 #contact id:heliang01
-
-import sys
-def supermarket_upgrade() :
+from datetime import datetime
+import os
+import random
+def supermarket_upgrade(member="") :
    goods=['超土豪咖啡_8','宇宙无敌大榴莲_12','自动翻译笔记本_15','科比签名篮球_500','路飞草帽_1000']
    print("欢迎光临翡翠限量版超市")
    print("以下是我们的价目表：")
-   i=0
+   i=1
    for good in goods:
-       print(good.replace("_",":")+"元")
+       print(str(i)+"."+good.replace("_",":")+"元")
+       i=i+1
    ps=""
    chooselist=""
    choosepick=[]
@@ -41,10 +43,15 @@ def supermarket_upgrade() :
    if len(chooselist)<=0 :
        print("您没有购买任何东西!")
        return False
-   ismember=input("请问您是否是会员(Y或者N)：")
+   #ismember=input("请问您是否是会员(Y或者N)：")
+   ismember=""
+   if member=="no" :
+       ismember==False
+   else :
+       ismember=checkismember(member)
    print("您的账单为:")
    print(chooselist[:-2])
-   if ismember.lower()=="y":
+   if ismember==True:
        #print(1)
        #print(chooselist)
        # for citem in chooselist :
@@ -60,6 +67,85 @@ def supermarket_upgrade() :
        bill.append(choosepick)
        bill.append(total)
        return bill
+def customer() :
+    #everydaycustoms={}
+    folder=os.getcwd()+r'\stageone\\'
+    #print(folder)
+    #exit()
+    datefornow=datetime.now().strftime("%Y-%m-%d")
+
+    #print(datetime.now().strftime("%Y-%m-%d"))
+    if not os.path.exists(folder) :
+        os.mkdir(folder)
+        everydaycollections = folder + 'supermarket_' + datefornow + ".txt"
+        for items in range(1,12) :
+            print("欢迎光临，第%s号顾客" % items)
+            tomember = ""
+            membership = input("如果您有会员号,请输入(如果没有输入no):")
+            if membership == "no":
+                tomember = "none"
+                memberadd = input("请问是否需要加入会员？(是的选Y或不需要则选N):")
+                if memberadd.lower() == "y":
+                    membershipadd = genmemno()
+            elif checkismember(membership) == False:
+                tomember = "none"
+                memberadd = input("您的账号在系统中不存在!请问是否需要加入会员？(是的选Y或不需要则选N):")
+                if memberadd.lower() == "y":
+                    membershipadd = genmemno()
+            else:
+                tomember = membership
+            getcustom = []
+            getcustom.append(items)
+            getcustom.append(tomember)
+            getcustom.append(customer(membership))
+            if items==11 :
+                print("今日已闭店，欢迎您明天光临")
+                file = open(everydaycollections, "w+")
+                file.write("close your mouth")
+                file.close()
+
+
+
+
+    else :
+        everydaycollections = folder + 'supermarket_' + datefornow + ".txt"
+        if os.path.exists(everydaycollections) :
+            return False
+        else :
+            for items in range(1,12) :
+                if items==11 :
+                    print("今日已闭店，欢迎您明天光临")
+                else :
+                    print("欢迎光临，第%s号顾客"%items)
+                    file = open(everydaycollections,"w+")
+                    file.write("close your mouth")
+                    file.close()
+def checkismember(code="") :
+    membercontainer=os.getcwd()+r'\members.txt'
+    if os.path.exists(membercontainer) :
+        openthelid=open(membercontainer,"r")
+        mytext=openthelid.readlines()
+        openthelid.close()
+        membercheck=False
+        for line in mytext :
+            linelist=line.split()
+            #print(linelist)
+            if code==linelist[0] and linelist[1]=="1" :
+                membercheck=True
+                break
+            else :
+                continue
+        return membercheck
+    else :
+        return False
+def genmemno() :
+    return "S"+str(random.randrange(1000001,1999999))
 if __name__ == '__main__':
     #startmemberlist = ["158", "253", "398"]
-    print(supermarket_upgrade())
+    #print(supermarket_upgrade())
+    #customer()
+    #print(checkismember("S1000356"))
+    #print("")
+    #(supermarket_upgrade("S1000356"))
+    #customer()
+    print(genmemno())
