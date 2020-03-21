@@ -51,7 +51,7 @@ def install(package):
         pip._internal.main(['install', package])
 
 def main():
-#    url = "https://www.douyu.com/g_wzry"
+    #testing url = "https://www.douyu.com/g_wzry"
     install("lxml")
     url = input("请输入要下载斗鱼网站的url地址：").strip()
     get_url(url)
