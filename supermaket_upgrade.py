@@ -4,9 +4,8 @@ import os
 import random
 import json
 
-
 def supermarket_upgrade(member=""):
-    goods = ['超土豪咖啡_8', '宇宙无敌大榴莲_12', '自动翻译笔记本_15', '科比签名篮球_500', '路飞草帽_1000']
+    goods = [u'超土豪咖啡_8', u'宇宙无敌大榴莲_12', u'自动翻译笔记本_15', u'科比签名篮球_500', u'路飞草帽_1000']
     print("欢迎光临翡翠限量版超市")
     print("以下是我们的价目表：")
     i = 1
@@ -36,10 +35,8 @@ def supermarket_upgrade(member=""):
             if int(seq) >= 1 and int(seq) < len(goods) + 1:
                 pickgoods = goods[int(seq) - 1]
                 getpickgoods = pickgoods.split("_")
-                chooselist += getpickgoods[0] + "：" + volumns + "件,共" + str(
-                    int(volumns) * int(getpickgoods[1])) + "元\r\n"
-                choosepick.append(
-                    getpickgoods[0] + "：" + volumns + "件,共" + str(int(volumns) * int(getpickgoods[1])) + "元")
+                chooselist += getpickgoods[0] + "：" + volumns + "件,共" + str(int(volumns) * int(getpickgoods[1])) + '元\r\n'
+                choosepick.append(getpickgoods[0] + "：" + volumns + "件,共" + str(int(volumns) * int(getpickgoods[1])) + "元")
                 # chooselist.append(getpickgoods[0]+"："+volumns+"件,共"+str(int(volumns)*int(getpickgoods[1]))+"元")
                 total = total + int(volumns) * int(getpickgoods[1])
 
@@ -74,7 +71,7 @@ def supermarket_upgrade(member=""):
         return bill
 
 
-def customer():
+def customer(isignoreempty=False):
     # everydaycustoms={}
     folder = os.getcwd() + r'\stageone\\'
     # print(folder)
@@ -86,7 +83,10 @@ def customer():
         os.mkdir(folder)
         everydaycollections = folder + 'supermarket_' + datefornow + ".txt"
         allcustom=[]
-        for items in range(1, 12):
+
+        items=1
+        while True:
+        #for items in range(1, 12):
             print("欢迎光临，第%s号顾客" % items)
             tomember = ""
             membershipadd = ""
@@ -96,11 +96,13 @@ def customer():
                 memberadd = input("请问是否需要加入会员？(是的选Y或不需要则选N):")
                 if memberadd.strip().lower() == "y":
                     membershipadd = genmemno()
+                    print("您的会员号是%s" % membershipadd)
             elif checkismember(membership.strip()) == False:
                 tomember = "none"
                 memberadd = input("您的账号在系统中不存在!请问是否需要加入会员？(是的选Y或不需要则选N):")
                 if memberadd.strip().lower() == "y":
                     membershipadd = genmemno()
+                    print("您的会员号是%s" % membershipadd)
             else:
                 tomember = membership.strip()
             getcustom = []
@@ -109,25 +111,43 @@ def customer():
                 tomember = membershipadd
                 membercontainer = os.getcwd() + r'\members.txt'
                 if os.path.exists(membercontainer):
-                    openthelid = open(membercontainer, "a")
+                    openthelid = open(membercontainer, "a", encoding='utf-8')
                     openthelid.write('\n'+membershipadd + "  1")
                     openthelid.close()
             getcustom.append(tomember)
-            getcustom.append(supermarket_upgrade(membership.strip()))
+            if isignoreempty==True :
+                appensupermaket=supermarket_upgrade(membership.strip())
+                if appensupermaket==False :
+                    continue
+                else:
+                    getcustom.append(appensupermaket)
+            elif isignoreempty==False :
+                appensupermaket=supermarket_upgrade(membership.strip())
+                if appensupermaket==False:
+                    getcustom.append(['您没有购买任何东西!'])
+                else:
+                    getcustom.append(appensupermaket)
             allcustom.append(getcustom)
-            if items == 11:
+            #print(json.dumps(allcustom).encode('utf-8'))
+            items = items+1
+            if items == 12:
                 print("今日已闭店，欢迎您明天光临")
-                file = open(everydaycollections, "w+")
-                file.write(json.dumps(allcustom))
+                file = open(everydaycollections, "a", encoding='utf-8')
+                for customitem in allcustom:
+                    file.write(json.dumps(customitem, ensure_ascii=False))
+                    file.write("\n")
                 file.close()
                 return getcustom
     else:
         everydaycollections = folder + 'supermarket_' + datefornow + ".txt"
         if os.path.exists(everydaycollections):
+            print("关门了，明天再来吧!")
             return False
         else:
             allcustom=[]
-            for items in range(1, 12):
+            items = 1
+            while True:
+            #for items in range(1, 12):
                 print("欢迎光临，第%s号顾客" % items)
                 tomember = ""
                 membershipadd=""
@@ -152,16 +172,30 @@ def customer():
                     tomember = membershipadd
                     membercontainer = os.getcwd() + r'\members.txt'
                     if os.path.exists(membercontainer):
-                        openthelid = open(membercontainer, "a")
+                        openthelid = open(membercontainer, "a", encoding='utf-8')
                         openthelid.write('\n'+membershipadd + "  1")
                         openthelid.close()
                 getcustom.append(tomember)
-                getcustom.append(supermarket_upgrade(membership))
+                if isignoreempty==True :
+                   appensupermaket=supermarket_upgrade(membership.strip())
+                   if appensupermaket==False :
+                       continue
+                   else:
+                       getcustom.append(appensupermaket)
+                elif isignoreempty==False :
+                    appensupermaket=supermarket_upgrade(membership.strip())
+                    if appensupermaket==False:
+                        getcustom.append(['您没有购买任何东西!'])
+                    else:
+                        getcustom.append(appensupermaket)
                 allcustom.append(getcustom)
-                if items == 11:
+                items = items + 1
+                if items == 12:
                     print("今日已闭店，欢迎您明天光临")
-                    file = open(everydaycollections, "a")
-                    file.write(json.dumps(allcustom))
+                    file = open(everydaycollections, "a", encoding='utf-8')
+                    for customitem in allcustom:
+                        file.write(json.dumps(customitem, ensure_ascii=False))
+                        file.write("\n")
                     file.close()
                     return allcustom
 
@@ -195,4 +229,4 @@ def genmemno():
 
 
 if __name__ == '__main__':
-    customer()
+    customer(True)
